@@ -1,0 +1,38 @@
+{
+  "name": "seco-keyval",
+  "version": "0.0.0",
+  "description": "Secure key-value store based on secure-container",
+  "homepage": "https://github.com/ExodusMovement/seco-keyval#readme",
+  "bugs": {
+    "url": "https://github.com/ExodusMovement/seco-keyval/issues"
+  },
+  "license": "MIT",
+  "author": "Exodus Movement, Inc.",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ExodusMovement/seco-keyval.git"
+  },
+  "scripts": {
+    "test": "standard && tape -r babel-register **/*.test.js | colortape",
+    "build": "babel src/ --out-dir lib --ignore test.js",
+    "posttest": "npm run build"
+  },
+  "dependencies": {
+    "buffer-noise": "^0.1.0",
+    "fs-extra": "^3.0.1",
+    "seco-rw": "0.0.2"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-preset-env": "^1.4.0",
+    "babel-register": "^6.24.1",
+    "colortape": "^0.1.2",
+    "standard": "^10.0.2",
+    "tape": "^4.6.3",
+    "tempy": "^0.1.0"
+  },
+  "standard": {
+    "ignore": "lib"
+  }
+}
