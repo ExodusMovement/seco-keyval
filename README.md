@@ -1,5 +1,9 @@
 # seco-keyval
 
+[![Travis branch](https://img.shields.io/travis/ExodusMovement/seco-keyval/master.svg)](https://travis-ci.org/ExodusMovement/seco-keyval)
+[![npm](https://img.shields.io/npm/v/seco-keyval.svg)](https://www.npmjs.com/package/seco-keyval)
+[![code style: standard](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+
 Secure key-value store built on [`secure-container`](https://github.com/ExodusMovement/secure-container).
 
 ## Installation
