@@ -19,6 +19,7 @@ test('SecoKeyval open() / set()', async (t) => {
 
   // verify the file actually got created
   t.true(await fs.pathExists(walletFile), 'wallet exists')
+  t.false(await fs.pathExists(walletFile + '.swp'), '.swp file is deleted')
 
   const seco = createSecoRW(walletFile, passphrase)
   let data = await seco.read()
