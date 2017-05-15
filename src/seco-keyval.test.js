@@ -107,3 +107,27 @@ test('get() & set() error if called before open()', async (t) => {
     t.end()
   }
 })
+
+test('identical set() calls', async (t) => {
+  const passphrase = Buffer.from('please let me in')
+  const walletFile = tempFile()
+  let kv = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
+  await kv.open(passphrase)
+
+  // Set data:
+  await kv.set('person1', { name: 'JP' })
+  const { mtime: mtime1 } = await fs.stat(walletFile)
+
+  // Set data to same value
+  await kv.set('person1', { name: 'JP' })
+  const { mtime: mtime2 } = await fs.stat(walletFile)
+
+  // Set data to same value again
+  await kv.set('person1', { name: 'JP' })
+  const { mtime: mtime3 } = await fs.stat(walletFile)
+
+  t.equal(mtime1.getTime(), mtime2.getTime(), 'file not touched')
+  t.equal(mtime1.getTime(), mtime3.getTime(), 'file not touched')
+
+  t.end()
+})
