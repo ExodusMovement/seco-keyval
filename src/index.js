@@ -9,6 +9,7 @@ export default class SecoKeyval {
   constructor (file, header) {
     this.hasOpened = false
     this.file = file
+    this._swpFile = this.file + '.swp'
     this.header = header
     this._data = {}
     this._hash = Buffer.alloc(0)
@@ -16,6 +17,7 @@ export default class SecoKeyval {
 
   async open (passphrase, initalData = {}) {
     this._seco = createSecoRW(this.file, passphrase, this.header)
+    this._swpSeco = createSecoRW(this._swpFile, passphrase, this.header)
     if (await fs.pathExists(this.file)) {
       let data = await this._seco.read()
       data = gunzipSync(shrink32k(data))
@@ -37,7 +39,9 @@ export default class SecoKeyval {
 
     if (!this._hash.equals(hash)) {
       this._hash = hash
-      await this._seco.write(expand32k(gzipSync(data)))
+      await this._swpSeco.write(expand32k(gzipSync(data)))
+      await fs.unlink(this.file)
+      await fs.rename(this._swpFile, this.file)
     }
   }
 
