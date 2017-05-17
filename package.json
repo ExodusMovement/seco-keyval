@@ -30,6 +30,7 @@
     "colortape": "^0.1.2",
     "standard": "^10.0.2",
     "tape": "^4.6.3",
+    "tape-promise": "^2.0.1",
     "tempy": "^0.1.0"
   },
   "standard": {

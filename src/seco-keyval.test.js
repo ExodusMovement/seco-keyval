@@ -1,4 +1,4 @@
-import test from 'tape'
+import test from 'tape-promise/tape'
 import { file as tempFile } from 'tempy'
 import createSecoRW from 'seco-rw'
 import createExpander from 'buffer-noise'
