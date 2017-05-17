@@ -50,6 +50,13 @@ export default class SecoKeyval {
     return this._data[key]
   }
 
+  async changePassphrase (newPassphrase) {
+    if (!this.hasOpened) throw new Error('Must open first.')
+    this._seco = createSecoRW(this.file, newPassphrase, this.header)
+    this._swpSeco = createSecoRW(this._swpFile, newPassphrase, this.header)
+    await this._seco.write(expand32k(gzipSync(Buffer.from(JSON.stringify(this._data)))))
+  }
+
   inspect () {
     return `<SecoKeyval: ${this.file}>`
   }
