@@ -53,6 +53,10 @@ Sets `key` to `value`. Returns a promise resolving when the data has been writte
 
 Gets `key` and returns a Promise resolving to the value of `key`. Returns a Promise resolving to `undefined` if the key is not set.
 
+### `kv.changePassphrase(newPassphrase)`
+
+Changes the passphrase to `newPassphrase`. Returns a promise resolving when the data has been written to disk.
+
 ## License
 
 MIT
