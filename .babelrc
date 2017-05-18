@@ -5,5 +5,10 @@
         "node": 6.5
       }
     }]
+  ],
+  "plugins": [
+    ["typecheck", { "disable": { "production": true } }],
+    "syntax-flow",
+    "transform-flow-strip-types"
   ]
 }

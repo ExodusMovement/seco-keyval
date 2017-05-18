@@ -6,7 +6,7 @@ import { createHash } from 'crypto'
 const { expand: expand32k, shrink: shrink32k } = createExpander(2 ** 15)
 
 export default class SecoKeyval {
-  constructor (file, header) {
+  constructor (file: string, header: {| appName: string, appVersion: string |}) {
     this.hasOpened = false
     this.file = file
     this._swpFile = this.file + '.swp'
@@ -15,7 +15,7 @@ export default class SecoKeyval {
     this._hash = Buffer.alloc(0)
   }
 
-  async open (passphrase, initalData = {}) {
+  async open (passphrase: Buffer | string, initalData = {}) {
     this._seco = createSecoRW(this.file, passphrase, this.header)
     this._swpSeco = createSecoRW(this._swpFile, passphrase, this.header)
     if (await fs.pathExists(this.file)) {
@@ -30,7 +30,7 @@ export default class SecoKeyval {
     this.hasOpened = true
   }
 
-  async set (key, val) {
+  async set (key: string, val: any) {
     if (!this.hasOpened) throw new Error('Must open first.')
     this._data[key] = val
 
@@ -45,12 +45,12 @@ export default class SecoKeyval {
     }
   }
 
-  async get (key) {
+  async get (key: string) {
     if (!this.hasOpened) throw new Error('Must open first.')
     return this._data[key]
   }
 
-  async changePassphrase (newPassphrase) {
+  async changePassphrase (newPassphrase: Buffer | string) {
     if (!this.hasOpened) throw new Error('Must open first.')
     this._seco = createSecoRW(this.file, newPassphrase, this.header)
     this._swpSeco = createSecoRW(this._swpFile, newPassphrase, this.header)
