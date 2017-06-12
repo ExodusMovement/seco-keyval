@@ -1,6 +1,6 @@
 {
   "name": "seco-keyval",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Secure key-value store based on secure-container",
   "homepage": "https://github.com/ExodusMovement/seco-keyval#readme",
   "bugs": {
