@@ -115,6 +115,37 @@ test('SecoKeyval changePassphrase()', async (t) => {
   t.end()
 })
 
+test('SecoKeyval changePassphraseOnNextWrite()', async (t) => {
+  const passphrase1 = Buffer.from('please let me in')
+  const passphrase2 = Buffer.from('a-longer-and-more-secure-passphrase')
+  const walletFile = tempFile()
+
+  let kv = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
+  await kv.open(passphrase1)
+
+  const p1 = { name: 'JP' }
+  const p2 = { name: 'Daniel' }
+
+  await kv.set('person1', p1)
+
+  kv.changePassphraseOnNextWrite(passphrase2)
+
+  let kv_ = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
+  await kv_.open(passphrase1)
+  const gp1 = await kv_.get('person1')
+  t.same(gp1, p1, 'old passphrase still works until next write')
+
+  await kv.set('person2', p2)
+
+  let kv2 = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
+  await kv2.open(passphrase2)
+  const gp2 = await kv2.get('person2')
+
+  t.same(gp2, p2, 'new passphrase is used on next .set() call')
+
+  t.end()
+})
+
 test('get() & set() error if called before open()', async (t) => {
   t.plan(2)
   const walletFile = tempFile()

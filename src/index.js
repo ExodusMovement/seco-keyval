@@ -46,9 +46,13 @@ export default class SecoKeyval {
     return this._data[key]
   }
 
-  async changePassphrase (newPassphrase: Buffer | string) {
+  changePassphraseOnNextWrite (newPassphrase: Buffer | string) {
     if (!this.hasOpened) throw new Error('Must open first.')
     this._seco = createSecoRW(this.file, newPassphrase, this.header)
+  }
+
+  async changePassphrase (newPassphrase: Buffer | string) {
+    this.changePassphraseOnNextWrite(newPassphrase)
     await this._seco.write(expand32k(gzipSync(Buffer.from(JSON.stringify(this._data)))))
   }
 
