@@ -1,3 +1,7 @@
+# 0.2.0 / 2017-08-15
+
+- Added `changePassphraseOnNextWrite()` method
+
 # 0.1.1 / 2017-06-12
 
 - Cleanup old code from `.swp` file
