@@ -57,6 +57,10 @@ Gets `key` and returns a Promise resolving to the value of `key`. Returns a Prom
 
 Changes the passphrase to `newPassphrase`. Returns a promise resolving when the data has been written to disk.
 
+### `kv.changePassphraseOnNextWrite(newPassphrase)`
+
+Schedule for the passphrase to change to `newPassphrase` on the next file write. There is no guarantee that the passphrase will get changed when using this method (i.e. if `set()` is never called afterwards). Returns `undefined`.
+
 ## License
 
 MIT
