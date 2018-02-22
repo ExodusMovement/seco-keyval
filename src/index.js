@@ -46,6 +46,16 @@ export default class SecoKeyval {
     return this._data[key]
   }
 
+  async delete (key: string) {
+    if (!this.hasOpened) throw new Error('Must open first.')
+
+    // Only need to delete and write if the key actually exists in the first place
+    if (this._data.hasOwnProperty(key)) {
+      delete this._data[key]
+      await this._seco.write(expand32k(gzipSync(Buffer.from(JSON.stringify(this._data)))))
+    }
+  }
+
   changePassphraseOnNextWrite (newPassphrase: Buffer | string) {
     if (!this.hasOpened) throw new Error('Must open first.')
     this._seco = createSecoRW(this.file, newPassphrase, this.header)

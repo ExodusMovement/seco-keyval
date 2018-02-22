@@ -60,6 +60,33 @@ test('SecoKeyval open() / set() / get()', async (t) => {
   t.end()
 })
 
+test('SecoKeyval open() / set() / delete() / get()', async (t) => {
+  const passphrase = Buffer.from('please let me in')
+  const walletFile = tempFile()
+
+  let kv = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
+  await kv.open(passphrase)
+
+  const p1 = { name: 'JP' }
+  const p2 = { name: 'Daniel' }
+
+  await kv.set('person1', p1)
+  await kv.set('person2', p2)
+
+  await kv.delete('person1')
+
+  let kv2 = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
+  await kv2.open(passphrase)
+
+  const gp1 = await kv2.get('person1')
+  const gp2 = await kv2.get('person2')
+
+  t.same(gp1, undefined, 'person 1 was deleted')
+  t.same(gp2, p2, 'person 2')
+
+  t.end()
+})
+
 test('SecoKeyval open() with initalData / get()', async (t) => {
   const passphrase = Buffer.from('please let me in')
   const walletFile = tempFile()
