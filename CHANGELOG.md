@@ -1,3 +1,7 @@
+# 0.3.0 / 2018-02-22
+
+- Added `delete()` method
+
 # 0.2.0 / 2017-08-15
 
 - Added `changePassphraseOnNextWrite()` method
