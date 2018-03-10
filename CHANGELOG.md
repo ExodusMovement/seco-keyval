@@ -1,3 +1,7 @@
+# 0.3.1 / 2018-03-10
+
+- Fixed bug with `initialData` option [#6](https://github.com/ExodusMovement/seco-keyval/pull/6)
+
 # 0.3.0 / 2018-02-22
 
 - Added `delete()` method
