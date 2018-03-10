@@ -99,6 +99,11 @@ test('SecoKeyval open() with initalData / get()', async (t) => {
   let kv = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
   await kv.open(passphrase, data)
 
+  let kvData = {}
+  kvData.person1 = await kv.get('person1')
+  kvData.person2 = await kv.get('person2')
+  t.same(kvData, data, 'data is availible')
+
   // verify the file actually got created
   t.true(await fs.pathExists(walletFile), 'wallet exists')
 

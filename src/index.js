@@ -22,7 +22,7 @@ export default class SecoKeyval {
       this._data = JSON.parse(data.toString('utf8'))
     } else {
       await this._seco.write(expand32k(gzipSync(Buffer.from(JSON.stringify(initalData)))))
-      this._data = {}
+      this._data = initalData
     }
 
     this.hasOpened = true
