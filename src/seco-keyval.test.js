@@ -119,6 +119,43 @@ test('SecoKeyval open() with initalData / get()', async (t) => {
   t.end()
 })
 
+test('SecoKeyval setAllData() / get()', async (t) => {
+  const passphrase = Buffer.from('please let me in')
+  const walletFile = tempFile()
+
+  const data = {
+    person1: { name: 'JP' },
+    person2: { name: 'Daniel' }
+  }
+
+  let kv = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
+  await kv.open(passphrase)
+
+  const p1 = await kv.get('person1')
+  t.assert(!p1, 'person1 is not set')
+
+  await kv.setAllData(data)
+
+  let kvData = {}
+  kvData.person1 = await kv.get('person1')
+  kvData.person2 = await kv.get('person2')
+  t.same(kvData, data, 'data is availible')
+
+  // verify the file actually got created
+  t.true(await fs.pathExists(walletFile), 'wallet exists')
+
+  let kv2 = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
+  await kv2.open(passphrase)
+
+  let newData = {}
+  newData.person1 = await kv2.get('person1')
+  newData.person2 = await kv2.get('person2')
+
+  t.same(newData, data, 'data is writen')
+
+  t.end()
+})
+
 test('SecoKeyval changePassphrase()', async (t) => {
   const passphrase1 = Buffer.from('please let me in')
   const passphrase2 = Buffer.from('a-longer-and-more-secure-passphrase')
