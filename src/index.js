@@ -28,6 +28,10 @@ export default class SecoKeyval {
     this.hasOpened = true
   }
 
+  async getAllData () {
+    return this._data
+  }
+
   async setAllData (data = {}) {
     if (!this.hasOpened) throw new Error('Must open first.')
     await this._seco.write(expand32k(gzipSync(Buffer.from(JSON.stringify(data)))))

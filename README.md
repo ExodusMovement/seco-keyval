@@ -65,6 +65,10 @@ Changes the passphrase to `newPassphrase`. Returns a promise resolving when the 
 
 Schedule for the passphrase to change to `newPassphrase` on the next file write. There is no guarantee that the passphrase will get changed when using this method (i.e. if `set()` is never called afterwards). Returns `undefined`.
 
+### `kv.getAllData()`
+
+Returns an object containing all the key-value pairs in the kv.
+
 ### `kv.setAllData(data)`
 
 **DANGER: Don't use this method unless you know what you're doing!**

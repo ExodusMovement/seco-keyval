@@ -119,6 +119,31 @@ test('SecoKeyval open() with initalData / get()', async (t) => {
   t.end()
 })
 
+test('SecoKeyval getAllData()', async (t) => {
+  const passphrase = Buffer.from('please let me in')
+  const walletFile = tempFile()
+
+  const data = {
+    person1: { name: 'JP' },
+    person2: { name: 'Daniel' }
+  }
+
+  let kv = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
+
+  await kv.open(passphrase)
+
+  await Promise.all(Object.keys(data).map((key) => kv.set(key, data[key])))
+
+  // verify the file actually got created
+  t.true(await fs.pathExists(walletFile), 'wallet exists')
+
+  const allData = await kv.getAllData()
+
+  t.deepEqual(allData, data, 'data is equal')
+
+  t.end()
+})
+
 test('SecoKeyval setAllData() / get()', async (t) => {
   const passphrase = Buffer.from('please let me in')
   const walletFile = tempFile()
