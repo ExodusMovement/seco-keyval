@@ -78,11 +78,16 @@ test('SecoKeyval open() / set() / delete() / get()', async (t) => {
   let kv2 = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
   await kv2.open(passphrase)
 
-  const gp1 = await kv2.get('person1')
+  let gp1 = await kv2.get('person1')
   const gp2 = await kv2.get('person2')
 
   t.same(gp1, undefined, 'person 1 was deleted')
   t.same(gp2, p2, 'person 2')
+
+  await kv2.set('person1', p1)
+  gp1 = await kv2.get('person1')
+
+  t.same(gp1, p1, 'person 1 was restored after deleting')
 
   t.end()
 })
