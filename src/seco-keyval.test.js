@@ -78,16 +78,33 @@ test('SecoKeyval open() / set() / delete() / get()', async (t) => {
   let kv2 = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
   await kv2.open(passphrase)
 
-  let gp1 = await kv2.get('person1')
+  const gp1 = await kv2.get('person1')
   const gp2 = await kv2.get('person2')
 
   t.same(gp1, undefined, 'person 1 was deleted')
   t.same(gp2, p2, 'person 2')
 
-  await kv2.set('person1', p1)
-  gp1 = await kv2.get('person1')
+  t.end()
+})
 
-  t.same(gp1, p1, 'person 1 was restored after deleting')
+test('SecoKeyval data can be deleted, restored, and is written to disk', async (t) => {
+  const passphrase = Buffer.from('please let me in')
+  const walletFile = tempFile()
+
+  const kv = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
+  await kv.open(passphrase)
+
+  const data = { value: true }
+  await kv.set('key', data)
+  await kv.delete('key')
+  await kv.set('key', data)
+
+  const kv2 = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
+  await kv2.open(passphrase)
+
+  const fetchedData = await kv2.get('key')
+
+  t.same(fetchedData, data, 'data is restored after deleting')
 
   t.end()
 })
