@@ -62,6 +62,11 @@ export default class SecoKeyval {
     // Only need to delete and write if the key actually exists in the first place
     if (this._data.hasOwnProperty(key)) {
       delete this._data[key]
+
+      const data = Buffer.from(JSON.stringify(this._data))
+      const hash = createHash('sha256').update(data).digest()
+      this._hash = hash
+
       await this._seco.write(expand32k(gzipSync(Buffer.from(JSON.stringify(this._data)))))
     }
   }
