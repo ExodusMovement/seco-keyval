@@ -1,3 +1,7 @@
+# 0.4.1 / 2019-01-26
+
+- Fixed bug where deleting and re-adding a key would not be persisted to disk. ([#7](https://github.com/ExodusMovement/seco-keyval/pull/7))
+
 # 0.4.0 / 2018-03-12
 
 - Added `getAllData()` method
