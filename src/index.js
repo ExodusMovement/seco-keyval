@@ -71,6 +71,11 @@ export default class SecoKeyval {
     }
   }
 
+  exists (key: string) {
+    if (!this.hasOpened) throw new Error('Must open first.')
+    return this._data[key] !== undefined
+  }
+
   changePassphraseOnNextWrite (newPassphrase: Buffer | string) {
     if (!this.hasOpened) throw new Error('Must open first.')
     this._seco = createSecoRW(this.file, newPassphrase, this.header)

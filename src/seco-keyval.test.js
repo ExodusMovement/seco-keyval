@@ -32,7 +32,7 @@ test('SecoKeyval open() / set()', async (t) => {
   t.end()
 })
 
-test('SecoKeyval open() / set() / get()', async (t) => {
+test('SecoKeyval open() / set() / get() / exists()', async (t) => {
   const passphrase = Buffer.from('please let me in')
   const walletFile = tempFile()
 
@@ -47,6 +47,8 @@ test('SecoKeyval open() / set() / get()', async (t) => {
 
   // verify the file actually got created
   t.true(await fs.pathExists(walletFile), 'wallet exists')
+  t.true(kv.exists('person1'), 'data point exists')
+  t.false(kv.exists('person3'), 'data point doesnt exist')
 
   let kv2 = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
   await kv2.open(passphrase)
