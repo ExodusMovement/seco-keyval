@@ -20,10 +20,10 @@ await kv.open('1-very-secure-password', { a: 1 })
 
 await kv.set('key', 'myValue')
 
-const value1 = await kv.get('a')
+const value1 = kv.get('a')
 console.log(value1) // -> 1
 
-const value2 = await kv.get('key')
+const value2 = kv.get('key')
 console.log(value2) // -> 'myValue'
 ```
 
@@ -51,7 +51,7 @@ Sets `key` to `value`. Returns a promise resolving when the data has been writte
 
 ### `kv.get(key)`
 
-Gets `key` and returns a Promise resolving to the value of `key`. Returns a Promise resolving to `undefined` if the key is not set.
+Gets `key` and returns the value of `key`. Returns `undefined` if the key is not set.
 
 ### `kv.delete(key)`
 

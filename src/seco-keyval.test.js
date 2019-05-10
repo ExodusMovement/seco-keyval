@@ -51,8 +51,8 @@ test('SecoKeyval open() / set() / get()', async (t) => {
   let kv2 = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
   await kv2.open(passphrase)
 
-  const gp1 = await kv2.get('person1')
-  const gp2 = await kv2.get('person2')
+  const gp1 = kv2.get('person1')
+  const gp2 = kv2.get('person2')
 
   t.same(gp1, p1, 'person 1')
   t.same(gp2, p2, 'person 2')
@@ -78,8 +78,8 @@ test('SecoKeyval open() / set() / delete() / get()', async (t) => {
   let kv2 = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
   await kv2.open(passphrase)
 
-  const gp1 = await kv2.get('person1')
-  const gp2 = await kv2.get('person2')
+  const gp1 = kv2.get('person1')
+  const gp2 = kv2.get('person2')
 
   t.same(gp1, undefined, 'person 1 was deleted')
   t.same(gp2, p2, 'person 2')
@@ -102,7 +102,7 @@ test('SecoKeyval data can be deleted, restored, and is written to disk', async (
   const kv2 = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
   await kv2.open(passphrase)
 
-  const fetchedData = await kv2.get('key')
+  const fetchedData = kv2.get('key')
 
   t.same(fetchedData, data, 'data is restored after deleting')
 
@@ -122,8 +122,8 @@ test('SecoKeyval open() with initalData / get()', async (t) => {
   await kv.open(passphrase, data)
 
   let kvData = {}
-  kvData.person1 = await kv.get('person1')
-  kvData.person2 = await kv.get('person2')
+  kvData.person1 = kv.get('person1')
+  kvData.person2 = kv.get('person2')
   t.same(kvData, data, 'data is availible')
 
   // verify the file actually got created
@@ -133,8 +133,8 @@ test('SecoKeyval open() with initalData / get()', async (t) => {
   await kv2.open(passphrase)
 
   let newData = {}
-  newData.person1 = await kv2.get('person1')
-  newData.person2 = await kv2.get('person2')
+  newData.person1 = kv2.get('person1')
+  newData.person2 = kv2.get('person2')
 
   t.same(newData, data, 'data is writen')
 
@@ -159,7 +159,7 @@ test('SecoKeyval getAllData()', async (t) => {
   // verify the file actually got created
   t.true(await fs.pathExists(walletFile), 'wallet exists')
 
-  const allData = await kv.getAllData()
+  const allData = kv.getAllData()
 
   t.deepEqual(allData, data, 'data is equal')
 
@@ -178,14 +178,14 @@ test('SecoKeyval setAllData() / get()', async (t) => {
   let kv = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
   await kv.open(passphrase)
 
-  const p1 = await kv.get('person1')
+  const p1 = kv.get('person1')
   t.assert(!p1, 'person1 is not set')
 
   await kv.setAllData(data)
 
   let kvData = {}
-  kvData.person1 = await kv.get('person1')
-  kvData.person2 = await kv.get('person2')
+  kvData.person1 = kv.get('person1')
+  kvData.person2 = kv.get('person2')
   t.same(kvData, data, 'data is availible')
 
   // verify the file actually got created
@@ -195,8 +195,8 @@ test('SecoKeyval setAllData() / get()', async (t) => {
   await kv2.open(passphrase)
 
   let newData = {}
-  newData.person1 = await kv2.get('person1')
-  newData.person2 = await kv2.get('person2')
+  newData.person1 = kv2.get('person1')
+  newData.person2 = kv2.get('person2')
 
   t.same(newData, data, 'data is writen')
 
@@ -222,8 +222,8 @@ test('SecoKeyval changePassphrase()', async (t) => {
   let kv2 = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
   await kv2.open(passphrase2)
 
-  const gp1 = await kv2.get('person1')
-  const gp2 = await kv2.get('person2')
+  const gp1 = kv2.get('person1')
+  const gp2 = kv2.get('person2')
 
   t.same(gp1, p1, 'person 1')
   t.same(gp2, p2, 'person 2')
@@ -248,14 +248,14 @@ test('SecoKeyval changePassphraseOnNextWrite()', async (t) => {
 
   let kv_ = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
   await kv_.open(passphrase1)
-  const gp1 = await kv_.get('person1')
+  const gp1 = kv_.get('person1')
   t.same(gp1, p1, 'old passphrase still works until next write')
 
   await kv.set('person2', p2)
 
   let kv2 = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
   await kv2.open(passphrase2)
-  const gp2 = await kv2.get('person2')
+  const gp2 = kv2.get('person2')
 
   t.same(gp2, p2, 'new passphrase is used on next .set() call')
 
@@ -275,7 +275,7 @@ test('get() & set() error if called before open()', async (t) => {
   }
 
   try {
-    const val = await kv.get('abc')
+    const val = kv.get('abc')
     t.fail(val)
   } catch (e) {
     t.assert(e, 'error')

@@ -28,7 +28,7 @@ export default class SecoKeyval {
     this.hasOpened = true
   }
 
-  async getAllData () {
+  getAllData () {
     return this._data
   }
 
@@ -51,7 +51,7 @@ export default class SecoKeyval {
     }
   }
 
-  async get (key: string) {
+  get (key: string) {
     if (!this.hasOpened) throw new Error('Must open first.')
     return this._data[key]
   }
