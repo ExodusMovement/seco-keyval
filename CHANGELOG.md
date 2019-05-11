@@ -1,3 +1,6 @@
+# 0.5.0 / 2019-05-10
+- Made both `get` methods synchronous. ([#10](https://github.com/ExodusMovement/seco-keyval/pull/10))
+
 # 0.4.1 / 2019-01-26
 
 - Fixed bug where deleting and re-adding a key would not be persisted to disk. ([#7](https://github.com/ExodusMovement/seco-keyval/pull/7))
