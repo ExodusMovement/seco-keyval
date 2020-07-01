@@ -5,6 +5,26 @@ import fs from 'fs-extra'
 import { createHash } from 'crypto'
 const { expand: expand32k, shrink: shrink32k } = createExpander(2 ** 15)
 
+const defer = () => {
+  let _resolve
+  let _reject
+  const promise = new Promise((resolve, reject) => {
+    _resolve = resolve
+    _reject = reject
+  })
+
+  return {
+    // use getters in case the underlying Promise implementation defines these asynchronously
+    get resolve () {
+      return _resolve
+    },
+    get reject () {
+      return _reject
+    },
+    promise
+  }
+}
+
 export default class SecoKeyval {
   constructor (file: string, header: {| appName: string, appVersion: string |}) {
     this.hasOpened = false
@@ -38,17 +58,56 @@ export default class SecoKeyval {
     this._data = data
   }
 
-  async set (key: string, val: any) {
+  async _execBatch (ops) {
     if (!this.hasOpened) throw new Error('Must open first.')
-    this._data[key] = val
+
+    ops.forEach(({ type, key, value }) => {
+      switch (type) {
+        case 'set':
+          this._data[key] = value
+          break
+        case 'delete':
+          // Only need to delete and write if the key actually exists in the first place
+          if (this._data.hasOwnProperty(key)) {
+            delete this._data[key]
+          }
+
+          break
+      }
+    })
 
     const data = Buffer.from(JSON.stringify(this._data))
     const hash = createHash('sha256').update(data).digest()
-
     if (!this._hash.equals(hash)) {
       this._hash = hash
       await this._seco.write(expand32k(gzipSync(data)))
     }
+  }
+
+  batch () {
+    const ops = []
+    const add = (op) => {
+      ops.push(op)
+      return batchAPI
+    }
+
+    const deferred = defer()
+    const batchAPI = {
+      add,
+      exec: () => this._execBatch(ops)
+        .then(deferred.resolve, deferred.reject)
+        .then(() => deferred.promise),
+      promise: deferred.promise,
+      get length () {
+        return ops.length
+      }
+    }
+
+    return batchAPI
+  }
+
+  async set (key: string, value: any) {
+    return this.batch().add({ type: 'set', key, value }).exec()
   }
 
   get (key: string) {
@@ -57,18 +116,7 @@ export default class SecoKeyval {
   }
 
   async delete (key: string) {
-    if (!this.hasOpened) throw new Error('Must open first.')
-
-    // Only need to delete and write if the key actually exists in the first place
-    if (this._data.hasOwnProperty(key)) {
-      delete this._data[key]
-
-      const data = Buffer.from(JSON.stringify(this._data))
-      const hash = createHash('sha256').update(data).digest()
-      this._hash = hash
-
-      await this._seco.write(expand32k(gzipSync(Buffer.from(JSON.stringify(this._data)))))
-    }
+    return this.batch().add({ type: 'delete', key }).exec()
   }
 
   changePassphraseOnNextWrite (newPassphrase: Buffer | string) {
