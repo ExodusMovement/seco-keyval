@@ -14,7 +14,7 @@
     "url": "git+https://github.com/ExodusMovement/seco-keyval.git"
   },
   "scripts": {
-    "test": "standard && tape -r babel-register **/*.test.js | colortape",
+    "test": "standard && tape -r babel-register src/**/*.test.js | colortape",
     "build": "babel src/ --out-dir lib --ignore test.js",
     "posttest": "NODE_ENV=production npm run build"
   },
