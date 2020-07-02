@@ -57,6 +57,14 @@ Gets `key` and returns the value of `key`. Returns `undefined` if the key is not
 
 Deletes `key`. Returns a promise resolving when the data has been written to disk.
 
+### `kv.memset(key, value)`
+
+Sets `key` to `value` in memory only. Useful for performance to cache a series of changes in memory before using `.flush()` to write them to disk.
+
+### `kv.memdelete(key, value)`
+
+Deletes `key` in memory only. Serves a similar purpose to the `.memset(key, value)` method.
+
 ### `kv.flush(force)`
 
 Conditionally syncs all in-memory changes to disk. This is done automatically by `.set`, `.delete`, `.changePassphrase`, and `.setAllData`.

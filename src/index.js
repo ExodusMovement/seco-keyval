@@ -39,24 +39,33 @@ export default class SecoKeyval {
   }
 
   async set (key: string, val: any) {
-    if (!this.hasOpened) throw new Error('Must open first.')
-    this._data[key] = val
+    this.memset(key, val)
     await this.flush()
   }
 
-  get (key: string) {
-    if (!this.hasOpened) throw new Error('Must open first.')
-    return this._data[key]
+  async delete (key: string) {
+    const hadKey = this._data.hasOwnProperty(key)
+    this.memdelete(key)
+    if (hadKey) await this.flush()
   }
 
-  async delete (key: string) {
+  memset (key: string, val: any) {
+    if (!this.hasOpened) throw new Error('Must open first.')
+    this._data[key] = val
+  }
+
+  memdelete (key: string) {
     if (!this.hasOpened) throw new Error('Must open first.')
 
     // Only need to delete and write if the key actually exists in the first place
     if (this._data.hasOwnProperty(key)) {
       delete this._data[key]
-      await this.flush()
     }
+  }
+
+  get (key: string) {
+    if (!this.hasOpened) throw new Error('Must open first.')
+    return this._data[key]
   }
 
   // Conditionally write changes to disk

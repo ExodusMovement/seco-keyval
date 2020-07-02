@@ -306,3 +306,35 @@ test('identical set() calls', async (t) => {
 
   t.end()
 })
+
+// https://stackoverflow.com/questions/6274339/how-can-i-shuffle-an-array
+function shuffle (a) {
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]]
+  }
+  return a
+}
+
+test('can cache changes in-memory for performance', async (t) => {
+  const passphrase = Buffer.from('please let me in')
+  const walletFile = tempFile()
+
+  const kv = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
+  await kv.open(passphrase)
+
+  const ops = shuffle([].concat(
+    new Array(100000).fill({ type: 'memset', args: ['key', 523] }),
+    new Array(100000).fill({ type: 'memdelete', args: ['key'] })
+  ))
+
+  const start = Date.now()
+  for (const { type, args } of ops) {
+    kv[type](...args)
+  }
+  await kv.flush()
+
+  t.true(Date.now() - start < 100, 'takes less than 100ms to perform 200,000 in-memory writes')
+
+  t.end()
+})
