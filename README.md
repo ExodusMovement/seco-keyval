@@ -57,6 +57,16 @@ Gets `key` and returns the value of `key`. Returns `undefined` if the key is not
 
 Deletes `key`. Returns a promise resolving when the data has been written to disk.
 
+### `kv.batch(operations)`
+
+Accepts an Array of `operations` where each item is an Object, with the structure:
+
+- `type` The String `"set"` or `"delete"`
+- `key` Key to perform the operation on
+- `value` for `set` operation, the value to be set to `key`
+
+Returns a promise resolving when the data has been written to disk.
+
 ### `kv.changePassphrase(newPassphrase)`
 
 Changes the passphrase to `newPassphrase`. Returns a promise resolving when the data has been written to disk.
