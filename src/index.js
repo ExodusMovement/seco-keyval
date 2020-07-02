@@ -11,7 +11,7 @@ export default class SecoKeyval {
     this.file = file
     this.header = header
     this._data = {}
-    this._hash = Buffer.alloc(0)
+    this._hashSinceLastFlush = Buffer.alloc(0)
   }
 
   async open (passphrase: Buffer | string, initalData = {}) {
@@ -41,14 +41,7 @@ export default class SecoKeyval {
   async set (key: string, val: any) {
     if (!this.hasOpened) throw new Error('Must open first.')
     this._data[key] = val
-
-    const data = Buffer.from(JSON.stringify(this._data))
-    const hash = createHash('sha256').update(data).digest()
-
-    if (!this._hash.equals(hash)) {
-      this._hash = hash
-      await this._seco.write(expand32k(gzipSync(data)))
-    }
+    await this.flush()
   }
 
   get (key: string) {
@@ -62,12 +55,19 @@ export default class SecoKeyval {
     // Only need to delete and write if the key actually exists in the first place
     if (this._data.hasOwnProperty(key)) {
       delete this._data[key]
+      await this.flush()
+    }
+  }
 
-      const data = Buffer.from(JSON.stringify(this._data))
-      const hash = createHash('sha256').update(data).digest()
-      this._hash = hash
+  // Conditionally write changes to disk
+  async flush () {
+    if (!this.hasOpened) throw new Error('Must open first.')
+    const data = Buffer.from(JSON.stringify(this._data))
+    const hash = createHash('sha256').update(data).digest()
 
-      await this._seco.write(expand32k(gzipSync(Buffer.from(JSON.stringify(this._data)))))
+    if (!this._hashSinceLastFlush.equals(hash)) {
+      this._hashSinceLastFlush = hash
+      await this._seco.write(expand32k(gzipSync(data)))
     }
   }
 
