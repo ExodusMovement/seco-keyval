@@ -59,7 +59,7 @@ Deletes `key`. Returns a promise resolving when the data has been written to dis
 
 ### `kv.flush(force)`
 
-Conditionally syncs all in-memory changes to disk. This is done automatically by `.get`, `.delete`, `.changePassphrase`, and `.setAllData`.
+Conditionally syncs all in-memory changes to disk. This is done automatically by `.set`, `.delete`, `.changePassphrase`, and `.setAllData`.
 
 This method only writes to disk if the key-value store's in-memory data has changed since the last `flush`. This behavior can be overridden by passing `true` as the `force` parameter.
 
