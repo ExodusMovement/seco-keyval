@@ -64,7 +64,7 @@ export default class SecoKeyval {
     const data = Buffer.from(JSON.stringify(this._data))
     const hash = createHash('sha256').update(data).digest()
 
-    if (!this._hashSinceLastFlush.equals(hash) || force) {
+    if (force || !this._hashSinceLastFlush.equals(hash)) {
       this._hashSinceLastFlush = hash
       await this._seco.write(expand32k(gzipSync(data)))
     }
