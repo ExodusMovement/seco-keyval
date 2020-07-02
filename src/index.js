@@ -21,8 +21,8 @@ export default class SecoKeyval {
       data = gunzipSync(shrink32k(data))
       this._data = JSON.parse(data.toString('utf8'))
     } else {
-      await this._seco.write(expand32k(gzipSync(Buffer.from(JSON.stringify(initalData)))))
       this._data = initalData
+      await this.flush()
     }
 
     this.hasOpened = true
@@ -34,8 +34,8 @@ export default class SecoKeyval {
 
   async setAllData (data = {}) {
     if (!this.hasOpened) throw new Error('Must open first.')
-    await this._seco.write(expand32k(gzipSync(Buffer.from(JSON.stringify(data)))))
     this._data = data
+    await this.flush()
   }
 
   async set (key: string, val: any) {
@@ -60,12 +60,11 @@ export default class SecoKeyval {
   }
 
   // Conditionally write changes to disk
-  async flush () {
-    if (!this.hasOpened) throw new Error('Must open first.')
+  async flush (force?: boolean = false) {
     const data = Buffer.from(JSON.stringify(this._data))
     const hash = createHash('sha256').update(data).digest()
 
-    if (!this._hashSinceLastFlush.equals(hash)) {
+    if (!this._hashSinceLastFlush.equals(hash) || force) {
       this._hashSinceLastFlush = hash
       await this._seco.write(expand32k(gzipSync(data)))
     }
@@ -78,7 +77,7 @@ export default class SecoKeyval {
 
   async changePassphrase (newPassphrase: Buffer | string) {
     this.changePassphraseOnNextWrite(newPassphrase)
-    await this._seco.write(expand32k(gzipSync(Buffer.from(JSON.stringify(this._data)))))
+    await this.flush(true)
   }
 
   inspect () {
