@@ -25,14 +25,14 @@
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",
-    "babel-eslint": "^7.2.3",
+    "babel-eslint": "^10.1.0",
     "babel-plugin-syntax-flow": "^6.18.0",
     "babel-plugin-transform-flow-strip-types": "^6.22.0",
     "babel-plugin-typecheck": "^3.9.0",
     "babel-preset-env": "^1.4.0",
     "babel-register": "^6.24.1",
     "colortape": "^0.1.2",
-    "standard": "^10.0.2",
+    "standard": "^14.3.4",
     "tape": "^4.6.3",
     "tape-promise": "^2.0.1",
     "tempy": "^0.1.0"
