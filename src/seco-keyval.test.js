@@ -87,6 +87,63 @@ test('SecoKeyval open() / set() / delete() / get()', async (t) => {
   t.end()
 })
 
+test('SecoKeyval batch()', async (t) => {
+  const passphrase = Buffer.from('please let me in')
+  const walletFile = tempFile()
+
+  let kv = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
+  await kv.open(passphrase)
+
+  const p1 = { name: 'JP' }
+  const p2 = { name: 'Daniel' }
+
+  await kv.set('person1', p1)
+  await kv.batch([
+    { type: 'set', key: 'person2', value: p2 },
+    { type: 'delete', key: 'person1' }
+  ])
+
+  let kv2 = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
+  await kv2.open(passphrase)
+
+  const gp1 = kv2.get('person1')
+  const gp2 = kv2.get('person2')
+
+  t.same(gp1, undefined, 'person 1 was deleted')
+  t.same(gp2, p2, 'person 2')
+
+  t.end()
+})
+
+test('SecoKeyval batch() operations are executed in order', async (t) => {
+  const passphrase = Buffer.from('please let me in')
+  const walletFile = tempFile()
+
+  let kv = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
+  await kv.open(passphrase)
+
+  const p1 = { name: 'JP' }
+  const p2 = { name: 'Daniel' }
+
+  await kv.batch([
+    { type: 'set', key: 'person1', value: p1 },
+    { type: 'set', key: 'person2', value: 'WRONG VALUE' },
+    { type: 'set', key: 'person2', value: p2 }, // Correct wrong value
+    { type: 'delete', key: 'person1' } // Delete key set earlier in batch
+  ])
+
+  let kv2 = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
+  await kv2.open(passphrase)
+
+  const gp1 = kv2.get('person1')
+  const gp2 = kv2.get('person2')
+
+  t.same(gp1, undefined, 'person 1 was deleted')
+  t.same(gp2, p2, 'person 2')
+
+  t.end()
+})
+
 test('SecoKeyval data can be deleted, restored, and is written to disk', async (t) => {
   const passphrase = Buffer.from('please let me in')
   const walletFile = tempFile()

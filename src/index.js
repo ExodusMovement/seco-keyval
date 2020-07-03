@@ -38,13 +38,26 @@ export default class SecoKeyval {
     this._data = data
   }
 
-  async set (key: string, val: any) {
+  async set (key: string, value: any) {
+    return this.batch([{ type: 'set', key, value }])
+  }
+
+  async batch (ops) {
     if (!this.hasOpened) throw new Error('Must open first.')
-    this._data[key] = val
+
+    ops.forEach(({ type, key, value }) => {
+      switch (type) {
+        case 'set':
+          this._data[key] = value
+          break
+        case 'delete':
+          delete this._data[key]
+          break
+      }
+    })
 
     const data = Buffer.from(JSON.stringify(this._data))
     const hash = createHash('sha256').update(data).digest()
-
     if (!this._hash.equals(hash)) {
       this._hash = hash
       await this._seco.write(expand32k(gzipSync(data)))
@@ -57,18 +70,7 @@ export default class SecoKeyval {
   }
 
   async delete (key: string) {
-    if (!this.hasOpened) throw new Error('Must open first.')
-
-    // Only need to delete and write if the key actually exists in the first place
-    if (this._data.hasOwnProperty(key)) {
-      delete this._data[key]
-
-      const data = Buffer.from(JSON.stringify(this._data))
-      const hash = createHash('sha256').update(data).digest()
-      this._hash = hash
-
-      await this._seco.write(expand32k(gzipSync(Buffer.from(JSON.stringify(this._data)))))
-    }
+    return this.batch([{ type: 'delete', key }])
   }
 
   changePassphraseOnNextWrite (newPassphrase: Buffer | string) {
