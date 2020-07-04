@@ -10,7 +10,7 @@ const { shrink: shrink32k } = createExpander(2 ** 15)
 test('SecoKeyval open() / set()', async (t) => {
   const passphrase = Buffer.from('please let me in')
   const walletFile = tempFile()
-  let kv = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
+  const kv = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
 
   await kv.open(passphrase)
 
@@ -36,7 +36,7 @@ test('SecoKeyval open() / set() / get()', async (t) => {
   const passphrase = Buffer.from('please let me in')
   const walletFile = tempFile()
 
-  let kv = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
+  const kv = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
   await kv.open(passphrase)
 
   const p1 = { name: 'JP' }
@@ -48,7 +48,7 @@ test('SecoKeyval open() / set() / get()', async (t) => {
   // verify the file actually got created
   t.true(await fs.pathExists(walletFile), 'wallet exists')
 
-  let kv2 = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
+  const kv2 = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
   await kv2.open(passphrase)
 
   const gp1 = kv2.get('person1')
@@ -64,7 +64,7 @@ test('SecoKeyval open() / set() / delete() / get()', async (t) => {
   const passphrase = Buffer.from('please let me in')
   const walletFile = tempFile()
 
-  let kv = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
+  const kv = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
   await kv.open(passphrase)
 
   const p1 = { name: 'JP' }
@@ -75,7 +75,7 @@ test('SecoKeyval open() / set() / delete() / get()', async (t) => {
 
   await kv.delete('person1')
 
-  let kv2 = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
+  const kv2 = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
   await kv2.open(passphrase)
 
   const gp1 = kv2.get('person1')
@@ -91,7 +91,7 @@ test('SecoKeyval batch()', async (t) => {
   const passphrase = Buffer.from('please let me in')
   const walletFile = tempFile()
 
-  let kv = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
+  const kv = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
   await kv.open(passphrase)
 
   const p1 = { name: 'JP' }
@@ -103,7 +103,7 @@ test('SecoKeyval batch()', async (t) => {
     { type: 'delete', key: 'person1' }
   ])
 
-  let kv2 = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
+  const kv2 = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
   await kv2.open(passphrase)
 
   const gp1 = kv2.get('person1')
@@ -119,7 +119,7 @@ test('SecoKeyval batch() operations are executed in order', async (t) => {
   const passphrase = Buffer.from('please let me in')
   const walletFile = tempFile()
 
-  let kv = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
+  const kv = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
   await kv.open(passphrase)
 
   const p1 = { name: 'JP' }
@@ -132,7 +132,7 @@ test('SecoKeyval batch() operations are executed in order', async (t) => {
     { type: 'delete', key: 'person1' } // Delete key set earlier in batch
   ])
 
-  let kv2 = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
+  const kv2 = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
   await kv2.open(passphrase)
 
   const gp1 = kv2.get('person1')
@@ -175,10 +175,10 @@ test('SecoKeyval open() with initalData / get()', async (t) => {
     person2: { name: 'Daniel' }
   }
 
-  let kv = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
+  const kv = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
   await kv.open(passphrase, data)
 
-  let kvData = {}
+  const kvData = {}
   kvData.person1 = kv.get('person1')
   kvData.person2 = kv.get('person2')
   t.same(kvData, data, 'data is availible')
@@ -186,10 +186,10 @@ test('SecoKeyval open() with initalData / get()', async (t) => {
   // verify the file actually got created
   t.true(await fs.pathExists(walletFile), 'wallet exists')
 
-  let kv2 = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
+  const kv2 = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
   await kv2.open(passphrase)
 
-  let newData = {}
+  const newData = {}
   newData.person1 = kv2.get('person1')
   newData.person2 = kv2.get('person2')
 
@@ -207,7 +207,7 @@ test('SecoKeyval getAllData()', async (t) => {
     person2: { name: 'Daniel' }
   }
 
-  let kv = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
+  const kv = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
 
   await kv.open(passphrase)
 
@@ -232,7 +232,7 @@ test('SecoKeyval setAllData() / get()', async (t) => {
     person2: { name: 'Daniel' }
   }
 
-  let kv = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
+  const kv = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
   await kv.open(passphrase)
 
   const p1 = kv.get('person1')
@@ -240,7 +240,7 @@ test('SecoKeyval setAllData() / get()', async (t) => {
 
   await kv.setAllData(data)
 
-  let kvData = {}
+  const kvData = {}
   kvData.person1 = kv.get('person1')
   kvData.person2 = kv.get('person2')
   t.same(kvData, data, 'data is availible')
@@ -248,10 +248,10 @@ test('SecoKeyval setAllData() / get()', async (t) => {
   // verify the file actually got created
   t.true(await fs.pathExists(walletFile), 'wallet exists')
 
-  let kv2 = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
+  const kv2 = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
   await kv2.open(passphrase)
 
-  let newData = {}
+  const newData = {}
   newData.person1 = kv2.get('person1')
   newData.person2 = kv2.get('person2')
 
@@ -265,7 +265,7 @@ test('SecoKeyval changePassphrase()', async (t) => {
   const passphrase2 = Buffer.from('a-longer-and-more-secure-passphrase')
   const walletFile = tempFile()
 
-  let kv = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
+  const kv = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
   await kv.open(passphrase1)
 
   const p1 = { name: 'JP' }
@@ -276,7 +276,7 @@ test('SecoKeyval changePassphrase()', async (t) => {
 
   await kv.changePassphrase(passphrase2)
 
-  let kv2 = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
+  const kv2 = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
   await kv2.open(passphrase2)
 
   const gp1 = kv2.get('person1')
@@ -293,7 +293,7 @@ test('SecoKeyval changePassphraseOnNextWrite()', async (t) => {
   const passphrase2 = Buffer.from('a-longer-and-more-secure-passphrase')
   const walletFile = tempFile()
 
-  let kv = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
+  const kv = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
   await kv.open(passphrase1)
 
   const p1 = { name: 'JP' }
@@ -303,14 +303,14 @@ test('SecoKeyval changePassphraseOnNextWrite()', async (t) => {
 
   kv.changePassphraseOnNextWrite(passphrase2)
 
-  let kv_ = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
+  const kv_ = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
   await kv_.open(passphrase1)
   const gp1 = kv_.get('person1')
   t.same(gp1, p1, 'old passphrase still works until next write')
 
   await kv.set('person2', p2)
 
-  let kv2 = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
+  const kv2 = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
   await kv2.open(passphrase2)
   const gp2 = kv2.get('person2')
 
@@ -323,7 +323,7 @@ test('get() & set() error if called before open()', async (t) => {
   t.plan(2)
   const walletFile = tempFile()
 
-  let kv = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
+  const kv = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
 
   try {
     await kv.set('abc', 'def')
@@ -343,7 +343,7 @@ test('get() & set() error if called before open()', async (t) => {
 test('identical set() calls', async (t) => {
   const passphrase = Buffer.from('please let me in')
   const walletFile = tempFile()
-  let kv = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
+  const kv = new SecoKeyval(walletFile, { appName: 'test', appVersion: '1.0.0' })
   await kv.open(passphrase)
 
   // Set data:
