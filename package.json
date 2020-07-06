@@ -9,6 +9,10 @@
   "license": "MIT",
   "author": "Exodus Movement, Inc.",
   "main": "lib/index.js",
+  "files": [
+    "lib/",
+    "!**/test.js"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ExodusMovement/seco-keyval.git"
