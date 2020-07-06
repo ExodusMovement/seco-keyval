@@ -1,3 +1,6 @@
+# 0.7.0 / 2020-07-06
+- Remove unneeded files from npm package ([#17](https://github.com/ExodusMovement/seco-keyval/pull/17))
+
 # 0.6.0 / 2020-07-06
 - **BREAKING:** Required Node 12+ ([#15](https://github.com/ExodusMovement/seco-keyval/pull/15))
 - Added `batch()` method ([#14](https://github.com/ExodusMovement/seco-keyval/pull/14))
