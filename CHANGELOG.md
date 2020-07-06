@@ -1,3 +1,7 @@
+# 0.6.0 / 2020-07-06
+- **BREAKING:** Required Node 12+ ([#15](https://github.com/ExodusMovement/seco-keyval/pull/15))
+- Added `batch()` method ([#14](https://github.com/ExodusMovement/seco-keyval/pull/14))
+
 # 0.5.0 / 2019-05-10
 - Made both `get` methods synchronous. ([#10](https://github.com/ExodusMovement/seco-keyval/pull/10))
 
